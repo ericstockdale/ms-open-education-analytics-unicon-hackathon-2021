@@ -1,0 +1,107 @@
+{
+	"name": "contosa_module_py",
+	"properties": {
+		"nbformat": 4,
+		"nbformat_minor": 2,
+		"bigDataPool": {
+			"referenceName": "spark3p1sm",
+			"type": "BigDataPoolReference"
+		},
+		"sessionProperties": {
+			"driverMemory": "28g",
+			"driverCores": 4,
+			"executorMemory": "28g",
+			"executorCores": 4,
+			"numExecutors": 2,
+			"conf": {
+				"spark.dynamicAllocation.enabled": "false",
+				"spark.dynamicAllocation.minExecutors": "2",
+				"spark.dynamicAllocation.maxExecutors": "2",
+				"spark.autotune.trackingId": "7628ba38-9062-4f02-9336-f8da6e5d6867"
+			}
+		},
+		"metadata": {
+			"saveOutput": true,
+			"synapse_widget": {
+				"version": "0.1"
+			},
+			"enableDebugMode": false,
+			"kernelspec": {
+				"name": "synapse_pyspark",
+				"display_name": "Synapse PySpark"
+			},
+			"language_info": {
+				"name": "python"
+			},
+			"a365ComputeOptions": {
+				"id": "/subscriptions/88bc4ad2-b92a-4cec-9c63-bac0d9696a30/resourceGroups/rg-oea-eshthon21/providers/Microsoft.Synapse/workspaces/syn-oea-eshthon21/bigDataPools/spark3p1sm",
+				"name": "spark3p1sm",
+				"type": "Spark",
+				"endpoint": "https://syn-oea-eshthon21.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/spark3p1sm",
+				"auth": {
+					"type": "AAD",
+					"authResource": "https://dev.azuresynapse.net"
+				},
+				"sparkVersion": "3.1",
+				"nodeCount": 3,
+				"cores": 4,
+				"memory": 28,
+				"extraHeader": null
+			}
+		},
+		"cells": [
+			{
+				"cell_type": "code",
+				"source": [
+					"class ContosoSIS(BaseOEAModule):\r\n",
+					"    def __init__(self, oea, source_folder='contoso_sis', pseudonymize = True):\r\n",
+					"        BaseOEAModule.__init__(self, oea, source_folder, pseudonymize)\r\n",
+					"        self.schemas['studentattendance'] = [['id', 'string', 'no-op'],\r\n",
+					"                                            ['student_id', 'string', 'hash-no-lookup'],\r\n",
+					"                                            ['school_year', 'integer', 'no-op'],\r\n",
+					"                                            ['school_id', 'string', 'no-op'],\r\n",
+					"                                            ['attendance_date', 'timestamp', 'no-op'],\r\n",
+					"                                            ['all_day', 'string', 'no-op'],\r\n",
+					"                                            ['Period', 'short', 'no-op'],\r\n",
+					"                                            ['section_id', 'string', 'no-op'],\r\n",
+					"                                            ['AttendanceCode', 'string', 'no-op'],\r\n",
+					"                                            ['PresenceFlag', 'boolean', 'no-op'],\r\n",
+					"                                            ['attendance_status', 'string', 'no-op'],\r\n",
+					"                                            ['attendance_type', 'string', 'no-op'],\r\n",
+					"                                            ['attendance_sequence', 'short', 'no-op']]\r\n",
+					"\r\n",
+					"        self.schemas['studentsectionmark'] = [['id', 'string', 'no-op'],\r\n",
+					"                                            ['student_id', 'string', 'hash-no-lookup'],\r\n",
+					"                                            ['section_id', 'string', 'no-op'],\r\n",
+					"                                            ['school_year', 'string', 'no-op'],\r\n",
+					"                                            ['term_id', 'string', 'no-op'],\r\n",
+					"                                            ['numeric_grade_earned', 'short', 'no-op'],\r\n",
+					"                                            ['alpha_grade_earned', 'string', 'no-op'],\r\n",
+					"                                            ['is_final_grade', 'string', 'no-op'],\r\n",
+					"                                            ['credits_attempted', 'short', 'no-op'],\r\n",
+					"                                            ['credits_earned', 'short', 'no-op'],\r\n",
+					"                                            ['grad_credit_type', 'string', 'no-op']]\r\n",
+					"\r\n",
+					"        self.schemas['studentdemographics'] = [['SIS ID', 'string', 'no-op'],\r\n",
+					"                                            ['FederalRaceCategory', 'string', 'hash-no-lookup'],\r\n",
+					"                                            ['PrimaryLanguage', 'string', 'no-op'],\r\n",
+					"                                            ['ELLStatus', 'string', 'no-op'],\r\n",
+					"                                            ['SpecialEducation', 'string', 'no-op'],\r\n",
+					"                                            ['LowIncome', 'boolean', 'no-op']]\r\n",
+					"    def process_data_from_stage1(self):\r\n",
+					"        self._process_entity_from_stage1('studentattendance', 'csv', 'overwrite', 'true')\r\n",
+					"        self._process_entity_from_stage1('studentsectionmark', 'csv', 'overwrite', 'true')\r\n",
+					"        self._process_entity_from_stage1('studentdemographics', 'csv', 'overwrite', 'true')\r\n",
+					"\r\n",
+					"    def copy_test_data_to_stage1(self):\r\n",
+					"        #Modifiying test data for visualization purposes\r\n",
+					"        mssparkutils.fs.cp(self.module_path + '/test_data/studentattendancemodified.csv', self.stage1np + '/studentattendance/studentattendance.csv', True)\r\n",
+					"        mssparkutils.fs.cp(self.module_path + '/test_data/studentsectionmark.csv', self.stage1np + '/studentsectionmark/studentsectionmark.csv', True)\r\n",
+					"        mssparkutils.fs.cp(self.module_path + '/test_data/studentdemographics.csv', self.stage1np + '/studentdemographics/studentdemographics.csv', True)"
+				],
+				"attachments": null,
+				"execution_count": 3
+			}
+		]
+	}
+}
