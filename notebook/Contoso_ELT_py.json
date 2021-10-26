@@ -1,5 +1,5 @@
 {
-	"name": "Contoso_ELT",
+	"name": "Contoso_ELT_py",
 	"properties": {
 		"nbformat": 4,
 		"nbformat_minor": 2,
@@ -17,14 +17,11 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "11316fba-c42f-4b40-b4f8-381875ebb57f"
+				"spark.autotune.trackingId": "ce99dc6b-54c4-43c7-893c-4a35d593741c"
 			}
 		},
 		"metadata": {
 			"saveOutput": true,
-			"synapse_widget": {
-				"version": "0.1"
-			},
 			"enableDebugMode": false,
 			"kernelspec": {
 				"name": "synapse_pyspark",
@@ -46,8 +43,9 @@
 				"nodeCount": 3,
 				"cores": 4,
 				"memory": 28,
-				"extraHeader": null
-			}
+				"automaticScaleJobs": false
+			},
+			"sessionKeepAliveTimeout": 30
 		},
 		"cells": [
 			{
@@ -55,7 +53,6 @@
 				"source": [
 					"%run /OEA_py"
 				],
-				"attachments": null,
 				"execution_count": 15
 			},
 			{
@@ -74,7 +71,6 @@
 				"source": [
 					"%run /contosa_module_py"
 				],
-				"attachments": null,
 				"execution_count": 16
 			},
 			{
@@ -93,7 +89,6 @@
 				"source": [
 					"%run /m365_module_py"
 				],
-				"attachments": null,
 				"execution_count": 17
 			},
 			{
@@ -115,7 +110,6 @@
 					"m365 = M365(oea)\r\n",
 					"contoso_sis = ContosoSIS(oea, 'contoso_sis', False)"
 				],
-				"attachments": null,
 				"execution_count": 18
 			},
 			{
@@ -144,7 +138,6 @@
 					"# Uncomment the following line and run this cell to reset everything if you want to walk through the process again.\r\n",
 					"reset_all_processing()"
 				],
-				"attachments": null,
 				"execution_count": 19
 			},
 			{
@@ -165,7 +158,6 @@
 					"contoso_sis.copy_test_data_to_stage1()\r\n",
 					"m365.copy_test_data_to_stage1()"
 				],
-				"attachments": null,
 				"execution_count": 20
 			},
 			{
@@ -188,7 +180,6 @@
 					"contoso_sis.process_data_from_stage1()\r\n",
 					"m365.process_activity_data_from_stage1()"
 				],
-				"attachments": null,
 				"execution_count": 21
 			},
 			{
@@ -265,7 +256,6 @@
 					"\r\n",
 					""
 				],
-				"attachments": null,
 				"execution_count": 22
 			},
 			{
@@ -307,7 +297,6 @@
 					"\r\n",
 					"print(f\"Created spark db's.\\nCurrent datasource: {oea.serverless_sql_endpoint}\")"
 				],
-				"attachments": null,
 				"execution_count": 23
 			}
 		]
